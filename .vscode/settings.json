@@ -19,5 +19,12 @@
     "**/Thumbs.db": true,
     "**/.ruby-lsp": true,
     "**/node_modules": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/coverage": true,
+    "**/public": true,
+    "**/android": true,
+    "**/ios": true,
+    "**/.expo": true,
   }
 }
