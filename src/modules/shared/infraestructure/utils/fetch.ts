@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 export const fetchAPI = async (url: string, options?: RequestInit) => {
   try {
-    const response = await fetch(`https://vnxy5n0-ducen29-8081.exp.direct/${url}`, options);
+    const response = await fetch(`https://ducen-ride-web.vercel.app/${url}`, options);
     if (!response.ok) {
       new Error(`HTTP error! status: ${response.status}`);
     }

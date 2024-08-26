@@ -27,7 +27,7 @@ const SignIn = () => {
 
       if (signInAttempt.status === 'complete') {
         await setActive({ session: signInAttempt.createdSessionId });
-        router.replace('/');
+        router.push('/(root)/(tabs)/home');
       } else {
         console.error(JSON.stringify(signInAttempt, null, 2));
       }
@@ -60,7 +60,7 @@ const SignIn = () => {
             secureTextEntry={true}
             onChangeText={(value) => setForm({ ...form, password: value })}
           />
-          <Button title="Sign In" onPress={() => onSignInPress} className="mt-6"></Button>
+          <Button title="Sign In" onPress={onSignInPress} className="mt-6"></Button>
           <OAuth></OAuth>
           <Link href={'/(auth)/sign-up'} className="text-lg text-center text-general-200 mt-10">
             <Text>You don`t have an account? </Text>

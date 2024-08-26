@@ -36,10 +36,10 @@ declare interface MapProps {
 declare interface Ride {
   origin_address: string;
   destination_address: string;
-  origin_latitude: number;
-  origin_longitude: number;
-  destination_latitude: number;
-  destination_longitude: number;
+  origin_latitude: string;
+  origin_longitude: string;
+  destination_latitude: string;
+  destination_longitude: string;
   ride_time: number;
   fare_price: number;
   payment_status: string;
@@ -67,19 +67,11 @@ declare interface GoogleInputProps {
   initialLocation?: string;
   containerStyle?: string;
   textInputBackgroundColor?: string;
-  handlePress: ({
-    latitude,
-    longitude,
-    address,
-  }: {
-    latitude: number;
-    longitude: number;
-    address: string;
-  }) => void;
+  handlePress: ({ latitude, longitude, address }: { latitude: number; longitude: number; address: string }) => void;
 }
 
 declare interface InputFieldProps extends TextInputProps {
-  label: string;
+  label?: string;
   icon?: any;
   secureTextEntry?: boolean;
   labelStyle?: string;
@@ -104,15 +96,7 @@ declare interface LocationStore {
   destinationLatitude: number | null;
   destinationLongitude: number | null;
   destinationAddress: string | null;
-  setUserLocation: ({
-    latitude,
-    longitude,
-    address,
-  }: {
-    latitude: number;
-    longitude: number;
-    address: string;
-  }) => void;
+  setUserLocation: ({ latitude, longitude, address }: { latitude: number; longitude: number; address: string }) => void;
   setDestinationLocation: ({
     latitude,
     longitude,
