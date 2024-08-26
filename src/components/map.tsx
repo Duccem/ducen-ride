@@ -8,6 +8,7 @@ import { useDriversStore, useLocationStore } from '../store';
 
 const drivers: Driver[] = [
   {
+    id: '1',
     driver_id: 1,
     first_name: 'James',
     last_name: 'Wilson',
@@ -17,6 +18,7 @@ const drivers: Driver[] = [
     rating: 4.8,
   },
   {
+    id: '2',
     driver_id: 2,
     first_name: 'David',
     last_name: 'Brown',
@@ -26,6 +28,7 @@ const drivers: Driver[] = [
     rating: 4.6,
   },
   {
+    id: '3',
     driver_id: 3,
     first_name: 'Michael',
     last_name: 'Johnson',
@@ -35,6 +38,7 @@ const drivers: Driver[] = [
     rating: 4.7,
   },
   {
+    id: '4',
     driver_id: 4,
     first_name: 'Robert',
     last_name: 'Green',
@@ -49,8 +53,9 @@ export const Map = () => {
   const { userLatitude, userLongitude, destinationLongitude, destinationLatitude } = useLocationStore();
   const region = calculateRegion({ userLatitude, userLongitude, destinationLongitude, destinationLatitude });
   const [markers, setMarkers] = useState<MarkerData[]>([]);
-  const { selectedDriver } = useDriversStore();
+  const { selectedDriver, setDrivers } = useDriversStore();
   useEffect(() => {
+    setDrivers(drivers);
     if (Array.isArray(drivers)) {
       if (!userLatitude || !userLongitude) return;
 

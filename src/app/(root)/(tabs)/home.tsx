@@ -5,6 +5,7 @@ import { icons, images } from '@/src/modules/shared/infraestructure/config/const
 import { useLocationStore } from '@/src/store';
 import { useUser } from '@clerk/clerk-expo';
 import * as Location from 'expo-location';
+import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -113,7 +114,7 @@ const recentRides = [
 
 const Home = () => {
   const { user } = useUser();
-  const { setUserLocation } = useLocationStore();
+  const { setUserLocation, setDestinationLocation } = useLocationStore();
   const [hasPermissions, setHasPermissions] = useState(false);
 
   useEffect(() => {
@@ -138,6 +139,11 @@ const Home = () => {
 
     requestLocationPermission();
   }, []);
+
+  const handleDestinationPress = (location: any) => {
+    setDestinationLocation(location);
+    router.push('/(root)/find-ride');
+  };
 
   const loading = true;
   const handleSignOut = () => {};
@@ -179,7 +185,7 @@ const Home = () => {
                 <Image source={icons.out} className="h-4 w-4"></Image>
               </TouchableOpacity>
             </View>
-            <GoogleTextInput icon={icons.search} containerStyle="" handlePress={() => {}} />
+            <GoogleTextInput icon={icons.search} containerStyle="" handlePress={handleDestinationPress} />
             <>
               <Text className="text-xl font-JakartaBold mt-5 mb-3">Your current location</Text>
               <View className="flex flex-row items-center bg-transparent h-[300px] rounded-xl">
