@@ -5,8 +5,8 @@ import { Image, View } from 'react-native';
 
 const TabIcon = ({ focused, source }: any) => (
   <View className={`flex flex-row justify-center items-center rounded-full ${focused ? 'bg-general-300' : ''}`}>
-    <View className={`rounded-full w-12 h-12 items-center justify-center ${focused ? 'bg-general-400' : ''}`}>
-      <Image source={source} tintColor={'white'} resizeMode="contain" className="w-7 h-7" />
+    <View className={`rounded-full w-8 h-8 items-center justify-center ${focused ? 'bg-black' : ''}`}>
+      <Image source={source} tintColor={'white'} resizeMode="contain" className="w-5 h-5" />
     </View>
   </View>
 );
@@ -20,15 +20,15 @@ const Layout = () => {
         tabBarInactiveTintColor: 'white',
         tabBarShowLabel: false,
         tabBarStyle: {
-          backgroundColor: '#333333',
+          backgroundColor: '#0CC25F',
           borderRadius: 50,
           paddingBottom: 0,
           overflow: 'hidden',
           marginHorizontal: 20,
           marginBottom: 20,
-          height: 80,
+          height: 50,
           display: 'flex',
-          justifyContent: 'space-between',
+          justifyContent: 'space-around',
           alignItems: 'center',
           flexDirection: 'row',
           position: 'absolute',

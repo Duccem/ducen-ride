@@ -30,6 +30,7 @@ const BookRide = () => {
               <Text className="text-lg font-JakartaSemiBold">
                 {driverDetails?.first_name} {driverDetails?.last_name}
               </Text>
+              <Text className="text-lg font-JakartaSemiBold">{driverDetails?.id}</Text>
 
               <View className="flex flex-row items-center space-x-0.5">
                 <Image source={icons.star} className="w-5 h-5" resizeMode="contain" />
@@ -63,16 +64,18 @@ const BookRide = () => {
 
             <View className="flex flex-row items-center justify-start border-b border-general-700 w-full py-3">
               <Image source={icons.point} className="w-6 h-6" />
-              <Text className="text-lg font-JakartaRegular ml-2">{destinationAddress}</Text>
+              <Text className="text-lg font-JakartaRegular ml-2" numberOfLines={1}>
+                {destinationAddress}
+              </Text>
             </View>
           </View>
           <Payment
-            amount={driverDetails.price || 12}
-            driverId={driverDetails.id}
+            amount={driverDetails?.price || 12}
+            driverId={driverDetails?.id}
             email={user?.emailAddresses[0].emailAddress || ''}
             fullName={user?.fullName || user?.emailAddresses[0].emailAddress.split('@')[0]!}
             rideTime={driverDetails?.time || 5}
-            key={driverDetails.id}
+            key={driverDetails?.id}
           />
         </>
       </RideLayout>

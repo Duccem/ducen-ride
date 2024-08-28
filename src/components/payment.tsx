@@ -1,16 +1,30 @@
 import { PaymentProps } from '@/types/type';
+import { useAuth } from '@clerk/clerk-expo';
 import { PaymentSheetError, useStripe } from '@stripe/stripe-react-native';
+import { Result } from '@stripe/stripe-react-native/lib/typescript/src/types/PaymentMethod';
+import { IntentCreationCallbackParams } from '@stripe/stripe-react-native/lib/typescript/src/types/PaymentSheet';
+import { router } from 'expo-router';
 import { useState } from 'react';
-import { Alert, Text } from 'react-native';
+import { Alert, Image, Text, View } from 'react-native';
+import ReactNativeModal from 'react-native-modal';
+import { images } from '../modules/shared/infraestructure/config/constants';
 import { fetchAPI } from '../modules/shared/infraestructure/utils/fetch';
+import { useLocationStore } from '../store';
 import Button from './button';
 
-export const Payment = ({ email, fullName, amount }: PaymentProps) => {
+export const Payment = ({ email, fullName, amount, rideTime, driverId }: PaymentProps) => {
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const { userAddress, userLatitude, userLongitude, destinationAddress, destinationLatitude, destinationLongitude } =
+    useLocationStore();
+  const { userId } = useAuth();
 
-  const confirmHandler = async (paymentMethod: any, _: any, intentCreationCallback: any) => {
+  const confirmHandler = async (
+    paymentMethod: Result,
+    _: boolean,
+    intentCreationCallback: (result: IntentCreationCallbackParams) => void
+  ) => {
     const { paymentIntent, customer } = await fetchAPI('/api/payment', {
       method: 'POST',
       headers: {
@@ -19,7 +33,7 @@ export const Payment = ({ email, fullName, amount }: PaymentProps) => {
       body: JSON.stringify({
         name: fullName || email.split('@')[0],
         email,
-        amount,
+        amount: parseInt(`${amount}`) * 100,
         paymentMethodId: paymentMethod.id,
       }),
     });
@@ -36,8 +50,28 @@ export const Payment = ({ email, fullName, amount }: PaymentProps) => {
         }),
       });
       if (result.client_secret) {
-        console.log('Payment successful');
-        Alert.prompt('Payment successful');
+        await fetchAPI('/api/ride', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            origin_address: userAddress,
+            destination_address: destinationAddress,
+            origin_latitude: userLatitude,
+            origin_longitude: userLongitude,
+            destination_latitude: destinationLatitude,
+            destination_longitude: destinationLongitude,
+            ride_time: rideTime.toFixed(0),
+            fare_price: parseInt(`${amount}`) * 100,
+            payment_status: 'paid',
+            driver_id: driverId,
+            user_id: userId,
+          }),
+        });
+        intentCreationCallback({
+          clientSecret: paymentIntent.client_secret,
+        });
         setSuccess(true);
       }
     }
@@ -45,14 +79,15 @@ export const Payment = ({ email, fullName, amount }: PaymentProps) => {
 
   const initializePaymentSheet = async () => {
     const { error } = await initPaymentSheet({
-      merchantDisplayName: 'Example, Inc.',
+      merchantDisplayName: 'Ducen ride, Inc.',
       intentConfiguration: {
         mode: {
-          amount: 1099,
-          currencyCode: 'usd',
+          amount: parseInt(`${amount}`) * 100,
+          currencyCode: 'USD',
         },
         confirmHandler,
       },
+      returnURL: 'myapp://book-ride',
     });
     if (!error) {
       setLoading(true);
@@ -68,7 +103,9 @@ export const Payment = ({ email, fullName, amount }: PaymentProps) => {
     if (error && error.code !== PaymentSheetError.Canceled) {
       Alert.alert(error.message);
     } else {
-      setSuccess(true);
+      if (error?.code === PaymentSheetError.Canceled) {
+        setSuccess(false);
+      } else setSuccess(true);
     }
     setLoading(false);
   };
@@ -76,7 +113,23 @@ export const Payment = ({ email, fullName, amount }: PaymentProps) => {
   return (
     <>
       <Button title="Confirm ride" disabled={loading} className="" onPress={openPaymentSheet} />
-      {success && <Text>Payment successful</Text>}
+      <ReactNativeModal isVisible={success} onBackdropPress={() => setSuccess(false)}>
+        <View className="flex flex-col items-center justify-center bg-white p-7 rounded-2xl">
+          <Image className="w-28 h-28 mt-5" source={images.check} />
+          <Text className="text-2xl font-JakartaBold mt-5 text-center">Ride booked!</Text>
+          <Text className="text-md text-general-200 font-JakartaMedium text-center mt-3">
+            Thank you for booking. your reservation has been placed. please proceed with your trip.
+          </Text>
+          <Button
+            title="Back Home"
+            onPress={() => {
+              setSuccess(false);
+              router.push('/(root)/(tabs)/home');
+            }}
+            className="mt-5"
+          />
+        </View>
+      </ReactNativeModal>
     </>
   );
 };
