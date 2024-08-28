@@ -73,14 +73,6 @@ export const Map = ({ hasPermissions }: { hasPermissions?: boolean }) => {
     );
   }
 
-  if (!hasPermissions) {
-    return (
-      <View className="w-full h-full 8 justify-center items-center bg-black/40">
-        <Text className="text-center">Please enable location permissions</Text>
-      </View>
-    );
-  }
-
   return (
     <MapView
       provider={PROVIDER_DEFAULT}
